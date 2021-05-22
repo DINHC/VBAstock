@@ -1,0 +1,94 @@
+
+'The script worked but not entirely as it did not incude all the worksheets but one.
+'When ran again it skipped over some worksheets and only filed in A and P
+'It finally worked
+Sub alphabet()
+    
+Dim ws As Worksheet
+    For Each ws In Worksheets
+
+    'add "price" to open and close
+    'previous attempts failed with just open (Dim open As Double)
+    
+    
+        Dim openprice As Double
+        Dim closeprice As Double
+        Dim YearlyChange As Double
+        Dim Ticker As String
+        Dim PercentChange As Double
+        Dim Volume As Double
+        Volume = 0
+        Dim row As Double
+        row = 2
+        Dim column As Integer
+        column = 1
+        Dim i As Long
+
+'Messed up on placing the column/letter and switch J and K
+        Cells(1, "J").Value = "Ticker"
+        Cells(1, "K").Value = "Yearly Change"
+        Cells(1, "L").Value = "Percent Change"
+        Cells(1, "M").Value = "Total Stock Volume"
+        
+    'Put the lowercased letter l instead of the number 1
+    
+        lastrow = ws.Cells(Rows.Count, 1).End(xlUp).row
+    
+    openprice = Cells(2, 3).Value
+       
+'Placed i = 1 and reaized later that it was to be 2
+    For i = 2 To lastrow
+         
+            If Cells(i + 1, 1).Value <> Cells(i, 1).Value Then
+              
+                Ticker = Cells(i, 1).Value
+                Cells(row, 10).Value = Ticker
+               
+                closeprice = Cells(i, 6).Value
+               
+                YearlyChange = closeprice - openprice
+                Cells(row, 11).Value = YearlyChange
+        
+              
+                If (openprice = 0 And closeprice = 0) Then
+                    PercentChange = 0
+                ElseIf (openprice = 0 And closeprice <> 0) Then
+                    PercentChange = 1
+                Else
+                    PercentChange = YearlyChange / openprice
+                    Cells(row, 12).Value = PercentChange
+                    Cells(row, 12).NumberFormat = "0.00%"
+                End If
+                
+                Volume = Volume + Cells(i, 8).Value
+                Cells(row, 13).Value = Volume
+               
+                row = row + 1
+                
+                openprice = Cells(i + 1, 3)
+               
+                Volume = 0
+            
+            Else
+                Volume = Volume + Cells(i, 7).Value
+            End If
+        Next i
+        
+       
+    YearlyChangeLastRow = ws.Cells(Rows.Count, 10).End(xlUp).row
+       
+        For j = 2 To YearlyChangeLastRow
+            
+            If (Cells(j, 11).Value > 0 Or Cells(j, 11).Value = 0) Then
+                Cells(j, 11).Interior.ColorIndex = 4
+            
+            ElseIf Cells(j, 11).Value < 0 Then
+                Cells(j, 11).Interior.ColorIndex = 3
+            End If
+        Next j
+        
+        
+    Next ws
+        
+End Sub
+'Self Reminder: Remember for later on to End if, Next "(what ever letter you used Dinh)", and next ws
